@@ -12,7 +12,8 @@ class CustomerSupportEnv:
     def reset(self):
         self.index = 0
         self.current_ticket = self.data[self.index]["ticket"]
-        return self.current_ticket
+        from models import State
+        return State(ticket=self.current_ticket)
 
     # Step function (one interaction)
     def step(self):
@@ -36,8 +37,21 @@ class CustomerSupportEnv:
             next_state = self.data[self.index]["ticket"]
             self.current_ticket = next_state
 
-        return next_state, reward, done, output
+        from models import Action, State
+
+        action_obj = Action(
+        issue=output["issue"],
+        action=output["action"],
+        reply=output["reply"]
+        )
+
+        if next_state:
+            next_state = State(ticket=next_state)
+
+        return next_state, reward, done, action_obj
 
     # State (current ticket)
+   
     def state(self):
-        return self.current_ticket
+        from models import State
+        return State(ticket=self.current_ticket)
