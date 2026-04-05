@@ -1,5 +1,6 @@
 import requests
 
+
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 import os
 
@@ -42,3 +43,12 @@ def agent(ticket):
 
     else:
         return {"issue": "shipping", "action": "escalate", "reply": "We will look into your issue."}
+import random
+
+responses = [
+    "We will resolve your issue.",
+    "Our team is looking into it.",
+    "We apologize and will fix this soon."
+]
+
+reply = random.choice(responses)
