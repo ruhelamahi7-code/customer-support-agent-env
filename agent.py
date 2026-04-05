@@ -1,54 +1,103 @@
 import requests
-
-
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 import os
+import random
+
+# Hugging Face API
+API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 
 headers = {
     "Authorization": f"Bearer {os.getenv('HF_API_KEY')}"
 }
 
+
 def agent(ticket):
+    # Response variations (for randomness)
+    responses = {
+        "billing": [
+            "We will process your refund.",
+            "Your refund is being initiated.",
+            "We are issuing your refund shortly."
+        ],
+        "product": [
+            "We will replace your product.",
+            "A replacement will be sent soon.",
+            "We are arranging a replacement for you."
+        ],
+        "shipping": [
+            "We will investigate the delivery issue.",
+            "Our team is checking the delay.",
+            "We are looking into your shipment issue."
+        ]
+    }
+
     # Try AI first
     try:
-        prompt = f"Classify this ticket and decide action: {ticket}"
+        prompt = f"Classify this ticket into billing, shipping, or product and suggest action: {ticket}"
 
-        response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
-        text = response.json()[0]["generated_text"].lower()
+        response = requests.post(
+            API_URL,
+            headers=headers,
+            json={"inputs": prompt}
+        )
 
-        # If model gives meaningful response, try extracting
-        if "billing" in text:
-            return {"issue": "billing", "action": "refund", "reply": "We will process your refund."}
+        result = response.json()
 
-        elif "product" in text or "damaged" in text or "broken" in text:
-            return {"issue": "product", "action": "replace", "reply": "We will replace your product."}
+        # Safe check (sometimes API gives different format)
+        if isinstance(result, list) and "generated_text" in result[0]:
+            text = result[0]["generated_text"].lower()
 
-        elif "shipping" in text or "delivery" in text:
-            return {"issue": "shipping", "action": "escalate", "reply": "We will look into the delivery issue."}
+            if "billing" in text:
+                return {
+                    "issue": "billing",
+                    "action": "refund",
+                    "reply": random.choice(responses["billing"])
+                }
 
-    except:
+            elif "product" in text or "damaged" in text or "broken" in text:
+                return {
+                    "issue": "product",
+                    "action": "replace",
+                    "reply": random.choice(responses["product"])
+                }
+
+            elif "shipping" in text or "delivery" in text:
+                return {
+                    "issue": "shipping",
+                    "action": "escalate",
+                    "reply": random.choice(responses["shipping"])
+                }
+
+    except Exception as e:
+        # If API fails, fallback will handle
         pass
 
-    # Fallback (RULE-BASED — ensures correctness)
+    # 🔁 RULE-BASED FALLBACK (ensures correctness)
     ticket = ticket.lower()
 
     if "damaged" in ticket or "broken" in ticket or "defective" in ticket:
-        return {"issue": "product", "action": "replace", "reply": "We will replace your product."}
+        return {
+            "issue": "product",
+            "action": "replace",
+            "reply": random.choice(responses["product"])
+        }
 
     elif "delayed" in ticket or "late" in ticket or "not delivered" in ticket:
-        return {"issue": "shipping", "action": "escalate", "reply": "We will investigate the delay."}
+        return {
+            "issue": "shipping",
+            "action": "escalate",
+            "reply": random.choice(responses["shipping"])
+        }
 
     elif "charged" in ticket or "payment" in ticket or "deducted" in ticket:
-        return {"issue": "billing", "action": "refund", "reply": "We will process your refund."}
+        return {
+            "issue": "billing",
+            "action": "refund",
+            "reply": random.choice(responses["billing"])
+        }
 
     else:
-        return {"issue": "shipping", "action": "escalate", "reply": "We will look into your issue."}
-import random
-
-responses = [
-    "We will resolve your issue.",
-    "Our team is looking into it.",
-    "We apologize and will fix this soon."
-]
-
-reply = random.choice(responses)
+        return {
+            "issue": "shipping",
+            "action": "escalate",
+            "reply": random.choice(responses["shipping"])
+        }
