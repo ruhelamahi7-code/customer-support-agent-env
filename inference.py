@@ -2,6 +2,10 @@ import os
 from env import CustomerSupportEnv
 from agent import agent
 
+API_BASE_URL = os.getenv("API_BASE_URL")
+MODEL_NAME = os.getenv("MODEL_NAME")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 def run_inference():
     print("[START] Running inference")
 
@@ -16,6 +20,7 @@ def run_inference():
     while not done:
         print(f"[STEP] Ticket: {state.ticket}")
 
+        # Agent generates action
         action = agent(state.ticket)
 
         state, reward, done, info = env.step(action)
