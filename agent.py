@@ -9,41 +9,39 @@ headers = {
 }
 
 def agent(ticket):
-    # Try AI first
-    try:
-        prompt = f"Classify this ticket and decide action: {ticket}"
-
-        response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
-        text = response.json()[0]["generated_text"].lower()
-
-        # If model gives meaningful response, try extracting
-        if "billing" in text:
-            return {"issue": "billing", "action": "refund", "reply": "We will process your refund."}
-
-        elif "product" in text or "damaged" in text or "broken" in text:
-            return {"issue": "product", "action": "replace", "reply": "We will replace your product."}
-
-        elif "shipping" in text or "delivery" in text:
-            return {"issue": "shipping", "action": "escalate", "reply": "We will look into the delivery issue."}
-
-    except:
-        pass
-
-    # Fallback (RULE-BASED — ensures correctness)
     ticket = ticket.lower()
 
-    if "damaged" in ticket or "broken" in ticket or "defective" in ticket:
-        return {"issue": "product", "action": "replace", "reply": "We will replace your product."}
+    # PRODUCT ISSUES
+    if any(word in ticket for word in ["damaged", "broken", "defective", "not working", "bad condition", "poor quality", "wrong item"]):
+        return {
+            "issue": "product",
+            "action": "replace",
+            "reply": "We will replace your product."
+        }
 
-    elif "delayed" in ticket or "late" in ticket or "not delivered" in ticket:
-        return {"issue": "shipping", "action": "escalate", "reply": "We will investigate the delay."}
+    # BILLING ISSUES
+    elif any(word in ticket for word in ["charged", "payment", "deducted", "refund", "overcharged"]):
+        return {
+            "issue": "billing",
+            "action": "refund",
+            "reply": "We will process your refund."
+        }
 
-    elif "charged" in ticket or "payment" in ticket or "deducted" in ticket:
-        return {"issue": "billing", "action": "refund", "reply": "We will process your refund."}
+    # SHIPPING ISSUES
+    elif any(word in ticket for word in ["delayed", "delivery", "not arrived", "shipment", "late", "not delivered", "status"]):
+        return {
+            "issue": "shipping",
+            "action": "escalate",
+            "reply": "We will investigate the delay."
+        }
 
+    # DEFAULT
     else:
-        return {"issue": "shipping", "action": "escalate", "reply": "We will look into your issue."}
-import random
+        return {
+            "issue": "shipping",
+            "action": "escalate",
+            "reply": "We will look into your issue."
+        }
 
 responses = [
     "We will resolve your issue.",
