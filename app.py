@@ -1,4 +1,4 @@
-fimport gradio as gr
+import gradio as gr
 from env import CustomerSupportEnv
 
 def run_env():
@@ -30,4 +30,4 @@ iface = gr.Interface(
     description="Simulates an AI agent handling customer support tickets"
 )
 
-iface.launch()
+iface.launch(server_name="0.0.0.0", server_port=7860)
