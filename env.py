@@ -16,42 +16,35 @@ class CustomerSupportEnv:
         return State(ticket=self.current_ticket)
 
     # Step function (one interaction)
-    def step(self):
-        # Agent processes ticket
-        output = agent(self.current_ticket)
+    def step(self, action=None):
+        # Use agent if no action passed
+        output = action if action else agent(self.current_ticket)
 
-        # Get correct answer
         correct = self.data[self.index]
-
-        # Evaluate
         reward = evaluate(output, correct)
 
-        # Move to next ticket
         self.index += 1
+        done = self.index >= len(self.data)
 
-        done = False
-        if self.index >= len(self.data):
-            done = True
-            next_state = None
+        if not done:
+            next_ticket = self.data[self.index]["ticket"]
+            self.current_ticket = next_ticket
         else:
-            next_state = self.data[self.index]["ticket"]
-            self.current_ticket = next_state
+            next_ticket = None
 
         from models import Action, State
 
         action_obj = Action(
-        issue=output["issue"],
-        action=output["action"],
-        reply=output["reply"]
+            issue=output["issue"],
+            action=output["action"],
+            reply=output["reply"]
         )
 
-        if next_state:
-            next_state = State(ticket=next_state)
+        next_state = State(ticket=next_ticket) if next_ticket else None
 
-        return next_state, reward, done, action_obj
+        return next_state, reward, done, {"action": action_obj}
 
     # State (current ticket)
-   
     def state(self):
         from models import State
         return State(ticket=self.current_ticket)
