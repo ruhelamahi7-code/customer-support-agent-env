@@ -6,6 +6,8 @@ def run_env():
     state = env.reset()
 
     output_text = "Starting Environment...\n\n"
+    total_reward = 0
+    count = 0
 
     done = False
 
@@ -14,13 +16,20 @@ def run_env():
 
         state, reward, done, action = env.step()
 
+        total_reward += reward
+        count += 1
+
         output_text += f"Issue: {action.issue}\n"
         output_text += f"Action: {action.action}\n"
         output_text += f"Reply: {action.reply}\n"
         output_text += f"Reward: {reward}\n"
         output_text += "\n-------------------\n\n"
 
+    final_score = total_reward / count
+    output_text += f"\nFINAL SCORE: {final_score}\n"
+
     return output_text
+
 
 iface = gr.Interface(
     fn=run_env,
