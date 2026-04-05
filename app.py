@@ -26,7 +26,7 @@ def run_env():
         output_text += "\n-------------------\n\n"
 
     final_score = total_reward / count
-    output_text += f"\nFINAL SCORE: {final_score}\n"
+    output_text += f"\nFINAL SCORE: {final_score:.2f}\n"
 
     return output_text
 
@@ -36,7 +36,9 @@ iface = gr.Interface(
     inputs=[],
     outputs="text",
     title="Customer Support Agent Environment",
-    description="Simulates an AI agent handling customer support tickets"
+    description="Simulates an AI agent handling customer support tickets and evaluates performance using rewards.",
+    allow_flagging="never",
+    submit_btn="Run Simulation"
 )
 
 iface.launch(server_name="0.0.0.0", server_port=7860)
