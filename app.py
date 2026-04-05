@@ -19,11 +19,9 @@ def run_env():
         total_reward += reward
         count += 1
 
-        output_text += f"Issue: {action.issue}\n"
-        output_text += f"Action: {action.action}\n"
-        output_text += f"Reply: {action.reply}\n"
-        output_text += f"Reward: {reward}\n"
-        output_text += "\n-------------------\n\n"
+        output_text += f"Issue: {action['action'].issue}\n"
+        output_text += f"Action: {action['action'].action}\n"
+        output_text += f"Reply: {action['action'].reply}\n"
 
     final_score = total_reward / count
     output_text += f"\nFINAL SCORE: {final_score:.2f}\n"
