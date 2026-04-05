@@ -1,13 +1,15 @@
-import requests
 import random
-
-
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 import os
 
-headers = {
-    "Authorization": f"Bearer {os.getenv('HF_API_KEY')}"
-}
+def get_random_reply():
+    responses = [
+        "We will resolve your issue.",
+        "Our team is looking into it.",
+        "We apologize and will fix this soon.",
+        "Thank you for your patience, we are handling this.",
+        "We’re sorry for the inconvenience caused."
+    ]
+    return random.choice(responses)
 
 def agent(ticket):
     ticket = ticket.lower()
@@ -17,7 +19,7 @@ def agent(ticket):
         return {
             "issue": "product",
             "action": "replace",
-            "reply": "We will replace your product."
+            "reply": get_random_reply()
         }
 
     # BILLING ISSUES
@@ -25,7 +27,7 @@ def agent(ticket):
         return {
             "issue": "billing",
             "action": "refund",
-            "reply": "We will process your refund."
+            "reply": get_random_reply()
         }
 
     # SHIPPING ISSUES
@@ -33,7 +35,7 @@ def agent(ticket):
         return {
             "issue": "shipping",
             "action": "escalate",
-            "reply": "We will investigate the delay."
+            "reply": get_random_reply()
         }
 
     # DEFAULT
@@ -41,13 +43,5 @@ def agent(ticket):
         return {
             "issue": "shipping",
             "action": "escalate",
-            "reply": "We will look into your issue."
+            "reply": get_random_reply()
         }
-
-responses = [
-    "We will resolve your issue.",
-    "Our team is looking into it.",
-    "We apologize and will fix this soon."
-]
-
-reply = random.choice(responses)
