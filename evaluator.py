@@ -25,5 +25,5 @@ def evaluate(output, correct):
     else:
         score -= 0.25
 
-    #return  max(score, 0)
-    return score
+    return  max(score, 0)
+    
