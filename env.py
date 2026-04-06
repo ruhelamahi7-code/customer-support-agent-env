@@ -17,16 +17,13 @@ class CustomerSupportEnv:
             return "medium"
         return "hard"
 
-    # Reset environment (start from beginning)
     def reset(self):
         self.index = 0
         self.current_ticket = self.data[self.index]["ticket"]
         from models import State
         return State(ticket=self.current_ticket)
 
-    # Step function (one interaction)
     def step(self, action=None):
-        # Use agent if no action passed
         output = action if action else agent(self.current_ticket)
 
         correct = self.data[self.index]
@@ -53,7 +50,6 @@ class CustomerSupportEnv:
         next_state = State(ticket=next_ticket) if next_ticket else None
         return next_state, reward, done, {"action": action_obj}
 
-    # State (current ticket)
     def state(self):
         from models import State
         return State(ticket=self.current_ticket)
