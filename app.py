@@ -1,4 +1,4 @@
-iimport gradio as gr
+import gradio as gr
 from env import CustomerSupportEnv
 
 def run_env():
