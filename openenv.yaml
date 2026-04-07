@@ -1,0 +1,34 @@
+name: customer-support-agent
+description: AI agent environment for handling and evaluating customer support tickets
+version: 1.0
+
+observation_space:
+  type: object
+  properties:
+    ticket:
+      type: string
+
+action_space:
+  type: object
+  properties:
+    issue:
+      type: string
+    action:
+      type: string
+    reply:
+      type: string
+
+reward_range: [0.0, 1.0]
+
+tasks:
+  - name: easy
+    description: classify issue type
+    reward_range: [0.0, 1.0]
+
+  - name: medium
+    description: classify issue and decide action
+    reward_range: [0.0, 1.0]
+
+  - name: hard
+    description: full pipeline (classification + action + reply)
+    reward_range: [0.0, 1.0]
