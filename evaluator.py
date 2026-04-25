@@ -1,13 +1,12 @@
+
 def evaluate(output, correct, difficulty="hard"):
     score = 0
 
-    # Easy: only grade issue classification
     if difficulty == "easy":
         if output["issue"] == correct["issue"]:
             score = 1.0
         return score
 
-    # Medium: grade issue + action
     if difficulty == "medium":
         if output["issue"] == correct["issue"]:
             score += 0.5
@@ -15,14 +14,14 @@ def evaluate(output, correct, difficulty="hard"):
             score += 0.5
         return score
 
-    # Hard: grade all three components
+    # hard — 4 components
     if output["issue"] == correct["issue"]:
         score += 0.25
     if output["action"] == correct["action"]:
         score += 0.25
-    if len(output["reply"]) > 30:
+    if len(output.get("reply", "")) > 30:
         score += 0.25
-    if output["action"] in output["reply"].lower():
+    if output["action"] in output.get("reply", "").lower():
         score += 0.25
 
-    return score
+    return max(0.0, min(score, 1.0))
