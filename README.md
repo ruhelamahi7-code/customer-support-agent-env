@@ -94,8 +94,8 @@ python inference.py
 |------------|-----------|
 | Easy | 1.00 |
 | Medium | 0.75 |
-| Hard | 0.50 |
-| **Overall** | **0.72** |
+| Hard | 0.88 |
+| **Overall** | **0.88** |
 
 ## Files
 
