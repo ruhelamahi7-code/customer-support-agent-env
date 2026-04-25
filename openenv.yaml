@@ -1,34 +1,50 @@
-name: customer-support-agent
-description: AI agent environment for handling and evaluating customer support tickets
-version: 1.0
+name: customer-support-agent-env
+version: "1.0.0"
+description: >
+  OpenEnv environment where an AI agent handles customer support
+  tickets — classifying issues, deciding actions, and drafting
+  replies. 20 tickets across easy, medium, and hard difficulty.
 
 observation_space:
   type: object
   properties:
     ticket:
       type: string
+      description: The raw customer support ticket text
+    difficulty:
+      type: string
+      enum: [easy, medium, hard]
+    reward:
+      type: number
+    done:
+      type: boolean
 
 action_space:
   type: object
   properties:
     issue:
       type: string
+      enum: [billing, shipping, product]
     action:
       type: string
+      enum: [refund, replace, escalate, resolve]
     reply:
       type: string
 
 reward_range: [0.0, 1.0]
 
 tasks:
-  - name: easy
-    description: classify issue type
+  - id: easy
+    difficulty: easy
+    description: Classify issue type only
     reward_range: [0.0, 1.0]
 
-  - name: medium
-    description: classify issue and decide action
+  - id: medium
+    difficulty: medium
+    description: Classify issue and decide action
     reward_range: [0.0, 1.0]
 
-  - name: hard
-    description: full pipeline (classification + action + reply)
+  - id: hard
+    difficulty: hard
+    description: Full pipeline — classify, action, and write reply
     reward_range: [0.0, 1.0]
