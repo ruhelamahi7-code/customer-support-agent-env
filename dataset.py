@@ -1,4 +1,3 @@
-# EASY TASK (basic classification)
 easy_tasks = [
     {"ticket": "I received a damaged product", "issue": "product", "action": "replace"},
     {"ticket": "The item is defective", "issue": "product", "action": "replace"},

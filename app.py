@@ -53,8 +53,5 @@ iface = gr.Interface(
     outputs="text",
     title="Customer Support Agent Environment",
     description="Simulates an AI agent handling customer support tickets and evaluates performance using rewards.",
-    allow_flagging="never",
-    submit_btn="Run Simulation"
 )
-
 iface.launch(server_name="0.0.0.0", server_port=7860)
